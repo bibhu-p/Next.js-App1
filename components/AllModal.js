@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const Modal = (props) => {
@@ -21,6 +21,12 @@ const Modal = (props) => {
         phone: false,
         address: false
     })
+    useEffect(() => {
+        if (props.action === "edit") {
+            setRegFormValues(props.userInfo);
+            // console.log('edit mode, data---->>>', userDetails)
+        }
+    }, [props.action])
     const classes = {
         valid: "transition ease-in-out focus:duration-300 border-0 px-3 text-[0.9rem] rounded-[3px] bg-gray-300 mt-2 w-full h-9 focus:ring-gray-700 focus:ring-1",
         inValid: "transition ease-in-out focus:duration-300 border-0 px-3 text-[0.9rem] rounded-[3px] bg-gray-300 mt-2 w-full h-9 ring-1 ring-red-400 focus:ring-red-400 focus:ring-1"
@@ -72,20 +78,38 @@ const Modal = (props) => {
             return;
         }
         console.log(regFormValues);
-        axios.post('http://localhost:5000/api/user/register', regFormValues)
-            .then(function (response) {
-                // setSpinner(false)
-                props.getData()
-                clear()
-                // console.log(response);
-                props.setShowModal(false);
-            })
-            .catch(function (error) {
-                // setSpinner(false)
-                clear()
-                props.setShowModal(false);
-                return console.log(error);
-            });
+
+        switch (props.action) {
+            case 'add': {
+                let url = 'http://localhost:5000/api/user/register';
+                axios.post(url, regFormValues)
+                    .then((res) => {
+                        console.log(res.data);
+                        // setSpinner(false)
+                        props.getData()
+                        clear()
+                        props.setShowModal(false)
+                    }).catch(err => {
+                        console.log('user create error--->>>', err)
+                    })
+            }
+            case 'edit': {
+                let url = 'http://localhost:5000/api/user/update/' + props.userInfo._id;
+                axios.put(url, regFormValues)
+                    .then((res) => {
+                        console.log(res.data);
+                        // setSpinner(false)
+                        // props.getData()
+                        clear()
+                        props.setShowModal(false)
+                    }).catch(err => {
+                        console.log('user create error--->>>', err)
+                    })
+            }
+            default: {
+                break;
+            }
+        }
     }
 
     return (
@@ -158,7 +182,6 @@ const Modal = (props) => {
                             value={regFormValues.phone}
                             onChange={(e) => { setRegFormErr({ ...regFormErr, phone: false }); setRegFormValues({ ...regFormValues, phone: e.target.value }) }}
                             className={regFormErr.phone ? classes.inValid : classes.valid}
-
                         />
                     </div>
                 </div>
@@ -201,7 +224,7 @@ const Modal = (props) => {
                 <button
                     className=" my-5 mx-5 bg-gray-600 w-[6rem] h-10 text-white rounded-md hover:bg-gray-800 flex justify-center items-center font-semibold transition ease-in-out hover:duration-300"
                     onClick={() => onAdd()}>
-                    Add
+                   {props.action === 'add' ? 'Add ' : 'Update'}
                 </button>
             </div>
         </div>

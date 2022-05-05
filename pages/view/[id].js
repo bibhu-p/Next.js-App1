@@ -1,11 +1,16 @@
 import { useRouter } from "next/router";
 import axios from "axios";
 import { useState, useEffect } from "react";
+import { BiEditAlt } from "react-icons/bi";
+import AllModal from "./.././../components/AllModal";
+
 
 const View = () => {
     const router = useRouter();
     const userId = router.query.id;
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState(true);
+    const [showModal, setShowModal] = useState(false);
+    const [action, setAction] = useState('edit');
     // console.log(userId);
 
     const [userInfo, setUserInfo] = useState({})
@@ -34,7 +39,7 @@ const View = () => {
                     <div className="card  w-[70%] mt-10">
                         <div className="mb-4 flex flex-row justify-between">
                             <span className=" w-16 h-4 bg-gray-200 animate-pulse"></span>
-                            <button className=" ">Edit</button>
+                            <button className="w-6 h-6 bg-gray-200 animate-pulse "></button>
                         </div>
                         <div className="border-t">
                             <div class="grid grid-cols-3 gap-2">
@@ -58,9 +63,9 @@ const View = () => {
                 <div className="flex justify-center items-baseline  h-[100vh] w-[100vw] bg-[#F7FAFC]">
                     <div className="card w-[70%] mt-10">
                         <div className="border-b pb-4 flex flex-row justify-between">
-                        <span className="text-xl"> User Info</span>
-                        <button className="">Edit</button>
-                        
+                            <span className="text-xl"> User Info</span>
+                            <button onClick={() => setShowModal(true)} ><BiEditAlt size={25} /></button>
+
                         </div>
                         <div className="">
                             <div class="grid grid-cols-3 gap-2">
@@ -79,6 +84,11 @@ const View = () => {
                             </div>
                         </div>
                     </div>
+                    {showModal ? <AllModal
+                        setShowModal={setShowModal}
+                        userInfo={userInfo}
+                        action={action}
+                    /> : null}
                 </div>
             }
 

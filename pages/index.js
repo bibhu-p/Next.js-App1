@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import AllModal from "../components/AllModal";
 import axios from "axios";
-import { BiEditAlt } from "react-icons/bi";
+import { GrView } from "react-icons/gr";
 import { RiDeleteBinLine } from "react-icons/ri";
+import { FiUserPlus } from 'react-icons/fi';
 import { useRouter } from "next/router";
 
 const Home = () => {
@@ -10,6 +11,7 @@ const Home = () => {
   const router = useRouter();
   const [showModal, setShowModal] = useState(false);
   const [users, setUsers] = useState([]);
+  const [action, setAction] = useState('add');
 
   const getData = () => {
     // console.log('get data function------');
@@ -46,7 +48,7 @@ const Home = () => {
   return (
     <div className="flex flex-col items-center ">
       <div className=" mt-6 w-full flex justify-end ">
-        <button className="mr-16 rounded-md  p-2  text-slate-100 bg-blue-500 hover:bg-blue-600 active:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300 " onClick={() => setShowModal(true)}>Add User</button>
+        <button className="mr-16 bg-gray-600 w-[4rem] h-10 text-white rounded-md hover:bg-gray-800 flex justify-center items-center font-semibold transition ease-in-out hover:duration-300" onClick={() => setShowModal(true)}><FiUserPlus size={25}/></button>
       </div>
 
       <div className="w-[90%] rounded-md">
@@ -70,7 +72,7 @@ const Home = () => {
             <div className="col-span">{data.phone}</div>
             <div className="col-span">{data.adhaar}</div>
             <div className="col-span">{data.address}</div>
-            <div className="col-span"><button onClick={() => viewData(data._id)}><BiEditAlt size={20} /></button> <button className=" mx-2.5" onClick={() => onDelete(data._id)}><RiDeleteBinLine size={20} /></button></div>
+            <div className="col-span"><button onClick={() => viewData(data._id)}><GrView size={20} /></button> <button className=" mx-2.5" onClick={() => onDelete(data._id)}><RiDeleteBinLine size={20} /></button></div>
           </div>
         ) : <div className=" mt-4 text-center" >No data available</div>
         }
@@ -80,6 +82,7 @@ const Home = () => {
       {showModal ? <AllModal
         setShowModal={setShowModal}
         getData={getData}
+        action= {action}
       /> : null}
     </div>
 
